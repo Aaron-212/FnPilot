@@ -5,21 +5,28 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Add App"
+            "state" : "translated",
+            "value" : "添加App"
           }
         }
       }
     },
     "Add Executable" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加可执行程序"
+          }
+        }
+      }
     },
     "Current mode: %@" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Current mode: %@"
+            "state" : "translated",
+            "value" : "当前模式：%@"
           }
         }
       }
@@ -28,8 +35,8 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Default"
+            "state" : "translated",
+            "value" : "默认"
           }
         }
       }
@@ -38,8 +45,8 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Fluor Reborn Menu"
+            "state" : "translated",
+            "value" : "Fluor Reborn菜单"
           }
         }
       }
@@ -52,14 +59,25 @@
             "value" : "Fn"
           }
         }
+      },
+      "shouldTranslate" : false
+    },
+    "General" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通用"
+          }
+        }
       }
     },
     "Global mode" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Global mode"
+            "state" : "translated",
+            "value" : "全局模式"
           }
         }
       }
@@ -68,18 +86,8 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Launch at login"
-          }
-        }
-      }
-    },
-    "Main" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Main"
+            "state" : "translated",
+            "value" : "登录时启动"
           }
         }
       }
@@ -88,8 +96,8 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Media"
+            "state" : "translated",
+            "value" : "媒体"
           }
         }
       }
@@ -98,8 +106,8 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Mode"
+            "state" : "translated",
+            "value" : "模式"
           }
         }
       }
@@ -108,8 +116,8 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "No Per-App Settings"
+            "state" : "translated",
+            "value" : "没有针对App的单独设置"
           }
         }
       }
@@ -118,8 +126,8 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Open Settings"
+            "state" : "translated",
+            "value" : "打开设置"
           }
         }
       }
@@ -128,8 +136,8 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Per App"
+            "state" : "translated",
+            "value" : "针对App"
           }
         }
       }
@@ -138,8 +146,8 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Quit"
+            "state" : "translated",
+            "value" : "退出"
           }
         }
       }

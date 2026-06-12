@@ -6,7 +6,7 @@ struct SettingsView: View {
             Tab {
                 GeneralSettingsView()
             } label: {
-                Label("Main", systemImage: "gear")
+                Label("General", systemImage: "gear")
             }
 
             Tab {
