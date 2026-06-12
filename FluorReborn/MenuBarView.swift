@@ -1,16 +1,20 @@
 import SwiftUI
 
-struct MenuBarItems: View {
+struct MenuBarView: View {
     @Environment(\.openSettings) private var openSettings
-    @Environment(FKeyManager.self) private var fKeyManager
-    @State private var frontmostAppObserver = FrontmostAppObserver()
-    @State private var perAppSettings = PerAppSettings()
+    @Environment(FunctionKeyModeController.self) private var modeController
 
     var body: some View {
-        @Bindable var fKeyManager = fKeyManager
+        @Bindable var modeController = modeController
 
-        Picker(selection: currentAppMode) {
-            ForEach(AppFKeyMode.pickerCases) { mode in
+        Label {
+            Text("Current mode: \(modeController.currentMode.title)")
+        } icon: {
+            Image(systemName: modeController.currentMode.systemImageName)
+        }
+
+        Picker(selection: currentApplicationMode) {
+            ForEach(ApplicationFunctionKeyMode.allCases) { mode in
                 Text(mode.title).tag(mode)
             }
         } label: {
@@ -21,15 +25,15 @@ struct MenuBarItems: View {
             }
         }
 
-        Picker(selection: $fKeyManager.currentMode) {
-            ForEach(FKeyMode.pickerCases) { mode in
+        Picker(selection: $modeController.globalMode) {
+            ForEach(FunctionKeyMode.allCases) { mode in
                 Text(mode.title).tag(mode)
             }
         } label: {
             Label {
                 Text("Global mode")
             } icon: {
-                Image(systemName: "finder")
+                Image(systemName: "macwindow.on.rectangle")
             }
         }
 
@@ -45,30 +49,22 @@ struct MenuBarItems: View {
     }
 
     private var currentAppName: String {
-        frontmostAppObserver.app?.localizedName ?? "No Localized Name"
+        modeController.frontmostApplication?.localizedName ?? "No Localized Name"
     }
 
     private var currentAppIcon: Image {
-        if let image = frontmostAppObserver.app?.icon {
+        if let image = modeController.frontmostApplication?.icon {
             Image(nsImage: image)
         } else {
             Image(systemName: "app")
         }
     }
 
-    private var currentAppMode: Binding<AppFKeyMode> {
+    private var currentApplicationMode: Binding<ApplicationFunctionKeyMode> {
         Binding {
-            guard let bundleIdentifier = frontmostAppObserver.app?.bundleIdentifier else {
-                return .default
-            }
-
-            return perAppSettings.mode(forBundle: bundleIdentifier)
+            modeController.currentApplicationMode
         } set: { mode in
-            guard let bundleIdentifier = frontmostAppObserver.app?.bundleIdentifier else {
-                return
-            }
-
-            perAppSettings.set(mode, forBundle: bundleIdentifier)
+            modeController.setCurrentApplicationMode(mode)
         }
     }
 

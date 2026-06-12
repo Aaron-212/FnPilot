@@ -2,9 +2,10 @@ import OSLog
 import ServiceManagement
 import SwiftUI
 
-struct FluorRebornAppSettings: View {
+struct GeneralSettingsView: View {
     private static let logger = Logger(
-        subsystem: Bundle.main.bundleIdentifier ?? "personal.aaron212.FluorReborn",
+        subsystem: Bundle.main.bundleIdentifier
+            ?? "personal.aaron212.FluorReborn",
         category: "Settings"
     )
 
@@ -27,7 +28,9 @@ struct FluorRebornAppSettings: View {
                 try SMAppService.mainApp.unregister()
             }
         } catch {
-            Self.logger.error("Failed to update launch at login: \(error.localizedDescription, privacy: .public)")
+            Self.logger.error(
+                "Failed to update launch at login: \(error.localizedDescription, privacy: .public)"
+            )
         }
     }
 }

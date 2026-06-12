@@ -1,23 +1,24 @@
 import Foundation
+import SwiftUI
 import IOKit.hid
 import Observation
 
-enum FKeyMode: Int, CaseIterable, Identifiable {
-    case media = 0
-    case fn
+enum FunctionKeyMode: Int, CaseIterable, Identifiable {
+    case mediaControls = 0
+    case functionKeys
 
     var id: Self { self }
 }
 
-enum AppFKeyMode: Int, CaseIterable, Codable, Identifiable {
-    case media = 0
-    case fn
-    case `default`
+enum ApplicationFunctionKeyMode: Int, CaseIterable, Codable, Identifiable {
+    case mediaControls = 0
+    case functionKeys
+    case useGlobalSetting
 
     var id: Self { self }
 }
 
-enum FKeyManagerError: LocalizedError {
+enum FunctionKeyModeManagerError: LocalizedError {
     case cannotCreateMainPort(kern_return_t)
     case cannotOpenService(kern_return_t)
     case cannotSetParameter(kern_return_t)
@@ -44,49 +45,56 @@ enum FKeyManagerError: LocalizedError {
     }
 }
 
-extension FKeyMode {
-    static let pickerCases: [Self] = [.fn, .media]
-
+extension FunctionKeyMode {
     var title: String {
         switch self {
-        case .media:
-            "Media"
-        case .fn:
-            "Fn"
+        case .mediaControls:
+            String(localized: "Media")
+        case .functionKeys:
+            String(localized: "Fn")
         }
     }
 
     var systemImageName: String {
         switch self {
-        case .media:
+        case .mediaControls:
             "sun.min"
-        case .fn:
+        case .functionKeys:
             "fn"
         }
     }
 }
 
-extension AppFKeyMode {
-    static let pickerCases: [Self] = [.default, .fn, .media]
+extension ApplicationFunctionKeyMode {
+    var explicitMode: FunctionKeyMode? {
+        switch self {
+        case .mediaControls:
+            .mediaControls
+        case .functionKeys:
+            .functionKeys
+        case .useGlobalSetting:
+            nil
+        }
+    }
 
     var title: String {
         switch self {
-        case .media:
-            "Media"
-        case .fn:
-            "Fn"
-        case .default:
-            "Default"
+        case .mediaControls:
+            String(localized: "Media")
+        case .functionKeys:
+            String(localized: "Fn")
+        case .useGlobalSetting:
+            String(localized: "Default")
         }
     }
 }
 
 @Observable
-final class FKeyManager {
-    var currentMode: FKeyMode {
+final class FunctionKeyModeManager {
+    var currentMode: FunctionKeyMode {
         didSet {
             do {
-                try FKeyManager.setCurrentFKeyMode(currentMode)
+                try FunctionKeyModeManager.setCurrentMode(currentMode)
             } catch {
                 print("Error: \(error)")
             }
@@ -95,14 +103,14 @@ final class FKeyManager {
 
     init() {
         do {
-            self.currentMode = try FKeyManager.currentFKeyMode()
+            self.currentMode = try FunctionKeyModeManager.currentMode()
         } catch {
             print("Error: \(error)")
-            self.currentMode = .media
+            self.currentMode = .mediaControls
         }
     }
 
-    static func setCurrentFKeyMode(_ mode: FKeyMode) throws {
+    static func setCurrentMode(_ mode: FunctionKeyMode) throws {
         let connect = try serviceConnection()
         defer { IOServiceClose(connect) }
 
@@ -120,11 +128,11 @@ final class FKeyManager {
         )
 
         guard result == KERN_SUCCESS else {
-            throw FKeyManagerError.cannotSetParameter(result)
+            throw FunctionKeyModeManagerError.cannotSetParameter(result)
         }
     }
 
-    static func currentFKeyMode() throws -> FKeyMode {
+    static func currentMode() throws -> FunctionKeyMode {
         let registry = try ioRegistryEntry()
         defer { IOObjectRelease(registry) }
 
@@ -136,18 +144,18 @@ final class FKeyManager {
                 0
             )?.takeRetainedValue()
         else {
-            throw FKeyManagerError.cannotGetParameter
+            throw FunctionKeyModeManagerError.cannotGetParameter
         }
 
         guard
             let dictionary = property as? [String: Any],
             let mode = dictionary["HIDFKeyMode"] as? Int,
-            let fKeyMode = FKeyMode(rawValue: mode)
+            let functionKeyMode = FunctionKeyMode(rawValue: mode)
         else {
-            throw FKeyManagerError.cannotGetParameter
+            throw FunctionKeyModeManagerError.cannotGetParameter
         }
 
-        return fKeyMode
+        return functionKeyMode
     }
 
     // MARK: - Private
@@ -158,7 +166,7 @@ final class FKeyManager {
         let kr = IOMainPort(mach_port_t(MACH_PORT_NULL), &mainPort)
 
         guard kr == KERN_SUCCESS else {
-            throw FKeyManagerError.cannotCreateMainPort(kr)
+            throw FunctionKeyModeManagerError.cannotCreateMainPort(kr)
         }
 
         let entry = IORegistryEntryFromPath(
@@ -167,7 +175,7 @@ final class FKeyManager {
         )
 
         guard entry != IO_OBJECT_NULL else {
-            throw FKeyManagerError.invalidRegistryEntry
+            throw FunctionKeyModeManagerError.invalidRegistryEntry
         }
 
         return entry
@@ -187,7 +195,7 @@ final class FKeyManager {
         )
 
         guard kr == KERN_SUCCESS else {
-            throw FKeyManagerError.cannotOpenService(kr)
+            throw FunctionKeyModeManagerError.cannotOpenService(kr)
         }
 
         return connection

@@ -2,16 +2,19 @@ import Foundation
 import Observation
 
 @Observable
-final class PerAppSettings {
+final class ApplicationFunctionKeyPreferences {
     private static let storageKey = "personal.aaron212.fluor.perappsettings"
+
+    @ObservationIgnored var onChange: () -> Void = { }
 
     private let defaults: UserDefaults
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
 
-    var items: [String: AppFKeyMode] = [:] {
+    var items: [String: ApplicationFunctionKeyMode] = [:] {
         didSet {
             save()
+            onChange()
         }
     }
 
@@ -25,17 +28,21 @@ final class PerAppSettings {
         self.encoder = encoder
 
         if let data = defaults.data(forKey: Self.storageKey),
-           let decoded = try? decoder.decode([String: AppFKeyMode].self, from: data) {
+           let decoded = try? decoder.decode([String: ApplicationFunctionKeyMode].self, from: data) {
             items = decoded
         }
     }
 
-    func mode(forBundle bundle: String) -> AppFKeyMode {
-        items[bundle, default: .default]
+    func mode(forBundleIdentifier bundleIdentifier: String) -> ApplicationFunctionKeyMode {
+        items[bundleIdentifier, default: .useGlobalSetting]
     }
 
-    func set(_ mode: AppFKeyMode, forBundle bundle: String) {
-        items[bundle] = mode
+    func set(_ mode: ApplicationFunctionKeyMode, forBundleIdentifier bundleIdentifier: String) {
+        items[bundleIdentifier] = mode
+    }
+
+    func remove(bundleIdentifier: String) {
+        items.removeValue(forKey: bundleIdentifier)
     }
 
     private func save() {
