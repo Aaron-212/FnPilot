@@ -41,26 +41,25 @@
         }
       }
     },
-    "Fluor Reborn Menu" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fluor Reborn菜单"
-          }
-        }
-      }
-    },
     "Fn" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Fn"
+            "state" : "translated",
+            "value" : "功能键"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
+    },
+    "FnPilot Menu" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FnPilot菜单"
+          }
+        }
+      }
     },
     "General" : {
       "localizations" : {
@@ -97,7 +96,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "媒体"
+            "value" : "媒体键"
           }
         }
       }

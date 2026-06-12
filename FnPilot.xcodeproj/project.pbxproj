@@ -7,26 +7,26 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		8DA98E992FBB71E0007915E0 /* FluorReborn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FluorReborn.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DA98E992FBB71E0007915E0 /* FnPilot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FnPilot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		8DA98EAB2FBB72F2007915E0 /* Exceptions for "FluorReborn" folder in "FluorReborn" target */ = {
+		8DA98EAB2FBB72F2007915E0 /* Exceptions for "FnPilot" folder in "FnPilot" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 8DA98E982FBB71E0007915E0 /* FluorReborn */;
+			target = 8DA98E982FBB71E0007915E0 /* FnPilot */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		8DA98E9B2FBB71E0007915E0 /* FluorReborn */ = {
+		8DA98E9B2FBB71E0007915E0 /* FnPilot */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				8DA98EAB2FBB72F2007915E0 /* Exceptions for "FluorReborn" folder in "FluorReborn" target */,
+				8DA98EAB2FBB72F2007915E0 /* Exceptions for "FnPilot" folder in "FnPilot" target */,
 			);
-			path = FluorReborn;
+			path = FnPilot;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -45,7 +45,7 @@
 		8DA98E902FBB71E0007915E0 = {
 			isa = PBXGroup;
 			children = (
-				8DA98E9B2FBB71E0007915E0 /* FluorReborn */,
+				8DA98E9B2FBB71E0007915E0 /* FnPilot */,
 				8DA98E9A2FBB71E0007915E0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -53,7 +53,7 @@
 		8DA98E9A2FBB71E0007915E0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8DA98E992FBB71E0007915E0 /* FluorReborn.app */,
+				8DA98E992FBB71E0007915E0 /* FnPilot.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -61,9 +61,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8DA98E982FBB71E0007915E0 /* FluorReborn */ = {
+		8DA98E982FBB71E0007915E0 /* FnPilot */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8DA98EA42FBB71E1007915E0 /* Build configuration list for PBXNativeTarget "FluorReborn" */;
+			buildConfigurationList = 8DA98EA42FBB71E1007915E0 /* Build configuration list for PBXNativeTarget "FnPilot" */;
 			buildPhases = (
 				8DA98E952FBB71E0007915E0 /* Sources */,
 				8DA98E962FBB71E0007915E0 /* Frameworks */,
@@ -74,13 +74,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				8DA98E9B2FBB71E0007915E0 /* FluorReborn */,
+				8DA98E9B2FBB71E0007915E0 /* FnPilot */,
 			);
-			name = FluorReborn;
+			name = FnPilot;
 			packageProductDependencies = (
 			);
-			productName = FluorReborn;
-			productReference = 8DA98E992FBB71E0007915E0 /* FluorReborn.app */;
+			productName = FnPilot;
+			productReference = 8DA98E992FBB71E0007915E0 /* FnPilot.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -98,7 +98,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 8DA98E942FBB71E0007915E0 /* Build configuration list for PBXProject "FluorReborn" */;
+			buildConfigurationList = 8DA98E942FBB71E0007915E0 /* Build configuration list for PBXProject "FnPilot" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -112,7 +112,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8DA98E982FBB71E0007915E0 /* FluorReborn */,
+				8DA98E982FBB71E0007915E0 /* FnPilot */,
 			);
 		};
 /* End PBXProject section */
@@ -269,7 +269,7 @@
 		8DA98EA52FBB71E1007915E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = FluorReborn;
+				ASSETCATALOG_COMPILER_APPICON_NAME = FnPilot;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -281,7 +281,9 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = FluorReborn/Info.plist;
+				INFOPLIST_FILE = FnPilot/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FnPilot;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -289,8 +291,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = personal.aaron212.FluorReborn;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = personal.aaron212.FnPilot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -305,7 +307,7 @@
 		8DA98EA62FBB71E1007915E0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = FluorReborn;
+				ASSETCATALOG_COMPILER_APPICON_NAME = FnPilot;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -317,7 +319,9 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = FluorReborn/Info.plist;
+				INFOPLIST_FILE = FnPilot/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = FnPilot;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -325,8 +329,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.6;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = personal.aaron212.FluorReborn;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = personal.aaron212.FnPilot;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -341,7 +345,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		8DA98E942FBB71E0007915E0 /* Build configuration list for PBXProject "FluorReborn" */ = {
+		8DA98E942FBB71E0007915E0 /* Build configuration list for PBXProject "FnPilot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8DA98EA22FBB71E1007915E0 /* Debug */,
@@ -350,7 +354,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8DA98EA42FBB71E1007915E0 /* Build configuration list for PBXNativeTarget "FluorReborn" */ = {
+		8DA98EA42FBB71E1007915E0 /* Build configuration list for PBXNativeTarget "FnPilot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8DA98EA52FBB71E1007915E0 /* Debug */,

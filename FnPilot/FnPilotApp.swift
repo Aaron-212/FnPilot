@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct FluorRebornApp: App {
+struct FnPilotApp: App {
     @State private var modeController: FunctionKeyModeController
     @State private var applicationPreferences: ApplicationFunctionKeyPreferences
 
@@ -22,7 +22,7 @@ struct FluorRebornApp: App {
         .windowResizability(.contentMinSize)
         .restorationBehavior(.disabled)
 
-        MenuBarExtra("Fluor Reborn Menu", systemImage: modeController.currentMode.systemImageName) {
+        MenuBarExtra("FnPilot Menu", systemImage: modeController.currentMode.systemImageName) {
             MenuBarView()
                 .environment(modeController)
         }

@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8DA98E982FBB71E0007915E0"
-               BuildableName = "FluorReborn.app"
-               BlueprintName = "FluorReborn"
-               ReferencedContainer = "container:FluorReborn.xcodeproj">
+               BuildableName = "FnPilot.app"
+               BlueprintName = "FnPilot"
+               ReferencedContainer = "container:FnPilot.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,9 +46,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8DA98E982FBB71E0007915E0"
-            BuildableName = "FluorReborn.app"
-            BlueprintName = "FluorReborn"
-            ReferencedContainer = "container:FluorReborn.xcodeproj">
+            BuildableName = "FnPilot.app"
+            BlueprintName = "FnPilot"
+            ReferencedContainer = "container:FnPilot.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -69,9 +69,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8DA98E982FBB71E0007915E0"
-            BuildableName = "FluorReborn.app"
-            BlueprintName = "FluorReborn"
-            ReferencedContainer = "container:FluorReborn.xcodeproj">
+            BuildableName = "FnPilot.app"
+            BlueprintName = "FnPilot"
+            ReferencedContainer = "container:FnPilot.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
