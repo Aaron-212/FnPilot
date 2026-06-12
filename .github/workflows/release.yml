@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   release:
-    name: Build and publish release
+    name: Build and draft release
     runs-on: macos-26
 
     steps:
@@ -91,7 +91,7 @@ jobs:
           path: build/artifacts/FnPilot-${{ steps.release_tag.outputs.safe_tag }}-unsigned.zip
           if-no-files-found: error
 
-      - name: Publish GitHub Release
+      - name: Draft GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.release_tag.outputs.tag }}
@@ -100,4 +100,5 @@ jobs:
           gh release create "$RELEASE_TAG" \
             "build/artifacts/FnPilot-${RELEASE_ASSET_TAG}-unsigned.zip" \
             --title "$RELEASE_TAG" \
-            --notes "Unsigned FnPilot app bundle built with Release optimization."
+            --notes "Unsigned FnPilot app bundle built with Release optimization." \
+            --draft
