@@ -34,6 +34,11 @@ You can also build from the command line:
 xcodebuild -project FnPilot.xcodeproj -scheme FnPilot -configuration Debug build
 ```
 
+## Release Downloads
+
+GitHub release assets are unsigned app bundles. macOS may block the first launch or show an unidentified developer warning.
+If you download a release build, open it only if you trust the source, then use Finder's `Open` command or System Settings privacy controls to allow it.
+
 ## Notes
 
 - FnPilot is inspired by Fluor, but it is a separate project, and not a fork.
