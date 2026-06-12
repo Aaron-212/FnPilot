@@ -13,15 +13,15 @@ struct MenuBarView: View {
             Image(systemName: modeController.currentMode.systemImageName)
         }
 
-        Picker(selection: currentApplicationMode) {
+        Picker(selection: currentTargetMode) {
             ForEach(ApplicationFunctionKeyMode.allCases) { mode in
                 Text(mode.title).tag(mode)
             }
         } label: {
             Label {
-                Text(currentAppName)
+                Text(currentTargetName)
             } icon: {
-                currentAppIcon
+                currentTargetIcon
             }
         }
 
@@ -48,23 +48,25 @@ struct MenuBarView: View {
         }
     }
 
-    private var currentAppName: String {
-        modeController.frontmostApplication?.localizedName ?? "No Localized Name"
+    private var currentTargetName: String {
+        modeController.frontmostTarget?.displayName ?? "No Foreground Target"
     }
 
-    private var currentAppIcon: Image {
-        if let image = modeController.frontmostApplication?.icon {
+    private var currentTargetIcon: Image {
+        if let image = modeController.frontmostTarget?.icon {
             Image(nsImage: image)
+        } else if case .executablePath = modeController.frontmostTarget?.id {
+            Image(systemName: "terminal")
         } else {
             Image(systemName: "app")
         }
     }
 
-    private var currentApplicationMode: Binding<ApplicationFunctionKeyMode> {
+    private var currentTargetMode: Binding<ApplicationFunctionKeyMode> {
         Binding {
-            modeController.currentApplicationMode
+            modeController.currentTargetMode
         } set: { mode in
-            modeController.setCurrentApplicationMode(mode)
+            modeController.setCurrentTargetMode(mode)
         }
     }
 

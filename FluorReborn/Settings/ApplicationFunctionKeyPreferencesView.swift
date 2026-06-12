@@ -33,6 +33,12 @@ struct ApplicationFunctionKeyPreferencesView: View {
                     Label("Add App", systemImage: "plus")
                 }
 
+                Button {
+                    addExecutable()
+                } label: {
+                    Label("Add Executable", systemImage: "plus")
+                }
+
                 Spacer()
             }
             .padding()
@@ -42,27 +48,29 @@ struct ApplicationFunctionKeyPreferencesView: View {
 
     private var entries: [ApplicationFunctionKeyPreference] {
         applicationPreferences.items
-            .map { bundleIdentifier, _ in
-                ApplicationFunctionKeyPreference(
-                    bundleIdentifier: bundleIdentifier
-                )
+            .map { targetID, _ in
+                preference(for: targetID)
             }
             .sorted {
-                appName(for: $0.bundleIdentifier)
-                    .localizedCaseInsensitiveCompare(appName(for: $1.bundleIdentifier)) == .orderedAscending
+                let nameComparison = $0.displayName.localizedCaseInsensitiveCompare($1.displayName)
+                if nameComparison != .orderedSame {
+                    return nameComparison == .orderedAscending
+                }
+
+                return $0.sortFallback.localizedCaseInsensitiveCompare($1.sortFallback) == .orderedAscending
             }
     }
 
     private func appRow(for entry: ApplicationFunctionKeyPreference) -> some View {
         HStack(spacing: 10) {
-            appIcon(for: entry.bundleIdentifier)
+            entry.icon
                 .resizable()
                 .frame(width: Self.iconSize, height: Self.iconSize)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(appName(for: entry.bundleIdentifier))
+                Text(entry.displayName)
                     .lineLimit(1)
-                Text(entry.bundleIdentifier)
+                Text(entry.detail)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -71,7 +79,7 @@ struct ApplicationFunctionKeyPreferencesView: View {
 
             Spacer()
 
-            Picker("Mode", selection: binding(for: entry.bundleIdentifier)) {
+            Picker("Mode", selection: binding(for: entry.id)) {
                 ForEach(ApplicationFunctionKeyMode.allCases) { mode in
                     Text(mode.title).tag(mode)
                 }
@@ -80,7 +88,7 @@ struct ApplicationFunctionKeyPreferencesView: View {
             .frame(width: 120)
 
             Button {
-                applicationPreferences.remove(bundleIdentifier: entry.bundleIdentifier)
+                applicationPreferences.remove(targetID: entry.id)
             } label: {
                 Image(systemName: "trash")
             }
@@ -89,11 +97,11 @@ struct ApplicationFunctionKeyPreferencesView: View {
         .padding(.vertical, 4)
     }
 
-    private func binding(for bundleIdentifier: String) -> Binding<ApplicationFunctionKeyMode> {
+    private func binding(for targetID: ForegroundTargetID) -> Binding<ApplicationFunctionKeyMode> {
         Binding {
-            applicationPreferences.mode(forBundleIdentifier: bundleIdentifier)
+            applicationPreferences.mode(for: targetID)
         } set: { mode in
-            applicationPreferences.set(mode, forBundleIdentifier: bundleIdentifier)
+            applicationPreferences.set(mode, for: targetID)
         }
     }
 
@@ -112,28 +120,60 @@ struct ApplicationFunctionKeyPreferencesView: View {
             return
         }
 
-        applicationPreferences.set(.useGlobalSetting, forBundleIdentifier: bundleIdentifier)
+        applicationPreferences.set(.useGlobalSetting, for: .bundleIdentifier(bundleIdentifier))
     }
 
-    private func appName(for bundleIdentifier: String) -> String {
-        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else {
-            return bundleIdentifier
+    private func addExecutable() {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.canChooseFiles = true
+
+        guard panel.runModal() == .OK,
+              let url = panel.url
+        else {
+            return
         }
 
-        return FileManager.default.displayName(atPath: url.path)
+        applicationPreferences.set(.useGlobalSetting, for: .executablePath(url.path))
     }
 
-    private func appIcon(for bundleIdentifier: String) -> Image {
-        guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else {
-            return Image(systemName: "app")
-        }
+    private func preference(for targetID: ForegroundTargetID) -> ApplicationFunctionKeyPreference {
+        switch targetID {
+        case .bundleIdentifier(let bundleIdentifier):
+            guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier) else {
+                return ApplicationFunctionKeyPreference(
+                    id: targetID,
+                    displayName: bundleIdentifier,
+                    detail: bundleIdentifier,
+                    icon: Image(systemName: "app"),
+                    sortFallback: bundleIdentifier
+                )
+            }
 
-        return Image(nsImage: NSWorkspace.shared.icon(forFile: url.path))
+            return ApplicationFunctionKeyPreference(
+                id: targetID,
+                displayName: FileManager.default.displayName(atPath: url.path),
+                detail: bundleIdentifier,
+                icon: Image(nsImage: NSWorkspace.shared.icon(forFile: url.path)),
+                sortFallback: bundleIdentifier
+            )
+        case .executablePath(let path):
+            return ApplicationFunctionKeyPreference(
+                id: targetID,
+                displayName: FileManager.default.displayName(atPath: path),
+                detail: path,
+                icon: Image(nsImage: NSWorkspace.shared.icon(forFile: path)),
+                sortFallback: path
+            )
+        }
     }
 }
 
 private struct ApplicationFunctionKeyPreference: Identifiable {
-    let bundleIdentifier: String
-
-    var id: String { bundleIdentifier }
+    let id: ForegroundTargetID
+    let displayName: String
+    let detail: String
+    let icon: Image
+    let sortFallback: String
 }

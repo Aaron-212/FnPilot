@@ -5,7 +5,7 @@ import Observation
 final class FunctionKeyModeController {
     @ObservationIgnored private var modeManager: FunctionKeyModeManager
     @ObservationIgnored private var applicationPreferences: ApplicationFunctionKeyPreferences
-    @ObservationIgnored private var frontmostApplicationObserver: FrontmostApplicationObserver
+    @ObservationIgnored private var foregroundTargetObserver: ForegroundTargetObserver
 
     var globalMode: FunctionKeyMode {
         didSet {
@@ -14,62 +14,62 @@ final class FunctionKeyModeController {
     }
 
     private(set) var currentMode: FunctionKeyMode
-    private(set) var frontmostApplication: NSRunningApplication?
-    private(set) var currentApplicationMode: ApplicationFunctionKeyMode
+    private(set) var frontmostTarget: ForegroundTarget?
+    private(set) var currentTargetMode: ApplicationFunctionKeyMode
 
     init(
         modeManager: FunctionKeyModeManager = FunctionKeyModeManager(),
         applicationPreferences: ApplicationFunctionKeyPreferences = ApplicationFunctionKeyPreferences(),
-        frontmostApplicationObserver: FrontmostApplicationObserver = FrontmostApplicationObserver()
+        foregroundTargetObserver: ForegroundTargetObserver = ForegroundTargetObserver()
     ) {
         self.modeManager = modeManager
         self.applicationPreferences = applicationPreferences
-        self.frontmostApplicationObserver = frontmostApplicationObserver
+        self.foregroundTargetObserver = foregroundTargetObserver
         self.globalMode = modeManager.currentMode
         self.currentMode = modeManager.currentMode
-        self.frontmostApplication = nil
-        self.currentApplicationMode = .useGlobalSetting
+        self.frontmostTarget = nil
+        self.currentTargetMode = .useGlobalSetting
 
-        self.frontmostApplicationObserver.onApplicationChange = { [weak self] application in
-            self?.setFrontmostApplication(application)
+        self.foregroundTargetObserver.onTargetChange = { [weak self] target in
+            self?.setFrontmostTarget(target)
         }
         self.applicationPreferences.onChange = { [weak self] in
-            self?.refreshCurrentApplicationMode()
+            self?.refreshCurrentTargetMode()
         }
 
-        setFrontmostApplication(frontmostApplicationObserver.application)
+        setFrontmostTarget(foregroundTargetObserver.target)
     }
 
-    func setCurrentApplicationMode(_ mode: ApplicationFunctionKeyMode) {
-        guard let bundleIdentifier = frontmostApplication?.bundleIdentifier else {
+    func setCurrentTargetMode(_ mode: ApplicationFunctionKeyMode) {
+        guard let targetID = frontmostTarget?.id else {
             return
         }
 
-        applicationPreferences.set(mode, forBundleIdentifier: bundleIdentifier)
-        currentApplicationMode = mode
+        applicationPreferences.set(mode, for: targetID)
+        currentTargetMode = mode
         applyEffectiveMode()
     }
 
-    private func setFrontmostApplication(_ application: NSRunningApplication?) {
-        frontmostApplication = application
-        refreshCurrentApplicationMode()
+    private func setFrontmostTarget(_ target: ForegroundTarget?) {
+        frontmostTarget = target
+        refreshCurrentTargetMode()
     }
 
-    private func refreshCurrentApplicationMode() {
-        currentApplicationMode = mode(for: frontmostApplication)
+    private func refreshCurrentTargetMode() {
+        currentTargetMode = mode(for: frontmostTarget)
         applyEffectiveMode()
     }
 
-    private func mode(for application: NSRunningApplication?) -> ApplicationFunctionKeyMode {
-        guard let bundleIdentifier = application?.bundleIdentifier else {
+    private func mode(for target: ForegroundTarget?) -> ApplicationFunctionKeyMode {
+        guard let targetID = target?.id else {
             return .useGlobalSetting
         }
 
-        return applicationPreferences.mode(forBundleIdentifier: bundleIdentifier)
+        return applicationPreferences.mode(for: targetID)
     }
 
     private func applyEffectiveMode() {
-        let mode = currentApplicationMode.explicitMode ?? globalMode
+        let mode = currentTargetMode.explicitMode ?? globalMode
         currentMode = mode
 
         guard modeManager.currentMode != mode else {

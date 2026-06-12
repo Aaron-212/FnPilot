@@ -11,7 +11,7 @@ final class ApplicationFunctionKeyPreferences {
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
 
-    var items: [String: ApplicationFunctionKeyMode] = [:] {
+    var items: [ForegroundTargetID: ApplicationFunctionKeyMode] = [:] {
         didSet {
             save()
             onChange()
@@ -28,21 +28,21 @@ final class ApplicationFunctionKeyPreferences {
         self.encoder = encoder
 
         if let data = defaults.data(forKey: Self.storageKey),
-           let decoded = try? decoder.decode([String: ApplicationFunctionKeyMode].self, from: data) {
+           let decoded = try? decoder.decode([ForegroundTargetID: ApplicationFunctionKeyMode].self, from: data) {
             items = decoded
         }
     }
 
-    func mode(forBundleIdentifier bundleIdentifier: String) -> ApplicationFunctionKeyMode {
-        items[bundleIdentifier, default: .useGlobalSetting]
+    func mode(for targetID: ForegroundTargetID) -> ApplicationFunctionKeyMode {
+        items[targetID, default: .useGlobalSetting]
     }
 
-    func set(_ mode: ApplicationFunctionKeyMode, forBundleIdentifier bundleIdentifier: String) {
-        items[bundleIdentifier] = mode
+    func set(_ mode: ApplicationFunctionKeyMode, for targetID: ForegroundTargetID) {
+        items[targetID] = mode
     }
 
-    func remove(bundleIdentifier: String) {
-        items.removeValue(forKey: bundleIdentifier)
+    func remove(targetID: ForegroundTargetID) {
+        items.removeValue(forKey: targetID)
     }
 
     private func save() {
