@@ -53,7 +53,7 @@ jobs:
           echo "safe_tag=${tag//\//-}" >> "$GITHUB_OUTPUT"
           echo "app_version=$app_version" >> "$GITHUB_OUTPUT"
 
-      - name: Build unsigned Release app
+      - name: Build ad-hoc signed Release app
         run: |
           xcodebuild \
             -project FnPilot.xcodeproj \
@@ -63,32 +63,28 @@ jobs:
             -derivedDataPath build/DerivedData \
             MARKETING_VERSION="${{ steps.release_tag.outputs.app_version }}" \
             CURRENT_PROJECT_VERSION="${{ steps.release_tag.outputs.app_version }}" \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="-" \
             build
 
-      - name: Strip ad-hoc signature
+      - name: Verify ad-hoc signature
         run: |
           app_path="build/DerivedData/Build/Products/Release/FnPilot.app"
-          codesign --remove-signature "$app_path" || true
-
-          if codesign -dv "$app_path" 2>/dev/null; then
-            echo "::error::Expected unsigned app bundle, but codesign still found a signature."
-            exit 1
-          fi
+          codesign --verify --strict --deep --verbose=2 "$app_path"
+          codesign --display --verbose=2 "$app_path"
 
       - name: Package app bundle
         run: |
           mkdir -p build/artifacts
           ditto -c -k --sequesterRsrc --keepParent \
             build/DerivedData/Build/Products/Release/FnPilot.app \
-            "build/artifacts/FnPilot-${{ steps.release_tag.outputs.safe_tag }}-unsigned.zip"
+            "build/artifacts/FnPilot-${{ steps.release_tag.outputs.safe_tag }}-adhoc.zip"
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
         with:
-          name: FnPilot-${{ steps.release_tag.outputs.safe_tag }}-unsigned
-          path: build/artifacts/FnPilot-${{ steps.release_tag.outputs.safe_tag }}-unsigned.zip
+          name: FnPilot-${{ steps.release_tag.outputs.safe_tag }}-adhoc
+          path: build/artifacts/FnPilot-${{ steps.release_tag.outputs.safe_tag }}-adhoc.zip
           if-no-files-found: error
 
       - name: Draft GitHub Release
@@ -98,7 +94,7 @@ jobs:
           RELEASE_ASSET_TAG: ${{ steps.release_tag.outputs.safe_tag }}
         run: |
           gh release create "$RELEASE_TAG" \
-            "build/artifacts/FnPilot-${RELEASE_ASSET_TAG}-unsigned.zip" \
+            "build/artifacts/FnPilot-${RELEASE_ASSET_TAG}-adhoc.zip" \
             --title "$RELEASE_TAG" \
-            --notes "Unsigned FnPilot app bundle built with Release optimization." \
+            --notes "Ad-hoc signed FnPilot app bundle built with Release optimization. This build is not notarized." \
             --draft
