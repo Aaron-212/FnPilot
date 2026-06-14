@@ -4,7 +4,7 @@ import SwiftUI
 
 struct GeneralSettingsView: View {
     private static let logger = Logger(
-        subsystem: Bundle.main.bundleIdentifier ?? "personal.aaron212.FnPilot",
+        subsystem: AppIdentity.bundleIdentifier,
         category: "Settings"
     )
 

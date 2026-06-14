@@ -3,7 +3,7 @@ import Observation
 
 @Observable
 final class ApplicationFunctionKeyPreferences {
-    private static let storageKey = "personal.aaron212.fnpilot.perappsettings"
+    private static let storageKey = "\(AppIdentity.bundleIdentifier.lowercased()).perappsettings"
 
     @ObservationIgnored var onChange: () -> Void = { }
 

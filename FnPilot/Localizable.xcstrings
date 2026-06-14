@@ -150,6 +150,16 @@
           }
         }
       }
+    },
+    "Remove Item" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除项目"
+          }
+        }
+      }
     }
   },
   "version" : "1.3"

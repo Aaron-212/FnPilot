@@ -21,6 +21,7 @@ struct FnPilotApp: App {
         .defaultLaunchBehavior(.suppressed)
         .windowResizability(.contentMinSize)
         .restorationBehavior(.disabled)
+        .defaultSize(width: 700, height: 500)
 
         MenuBarExtra("FnPilot Menu", systemImage: modeController.currentMode.systemImageName) {
             MenuBarView()
