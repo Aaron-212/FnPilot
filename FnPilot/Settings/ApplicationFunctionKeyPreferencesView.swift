@@ -142,6 +142,7 @@ struct ApplicationFunctionKeyPreferencesView: View {
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.canChooseFiles = true
+        panel.allowedContentTypes = [.executable, .unixExecutable]
 
         guard panel.runModal() == .OK,
             let url = panel.url
