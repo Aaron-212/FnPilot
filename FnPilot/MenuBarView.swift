@@ -35,6 +35,7 @@ struct MenuBarView: View {
             } icon: {
                 Image(systemName: "macwindow.on.rectangle")
             }
+            .labelStyle(.titleAndIcon)
         }
 
         Divider()
