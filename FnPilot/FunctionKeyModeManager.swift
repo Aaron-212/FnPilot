@@ -91,6 +91,11 @@ extension ApplicationFunctionKeyMode {
 
 @Observable
 final class FunctionKeyModeManager {
+    private static let preferredModeStorageKey = "\(AppIdentity.bundleIdentifier.lowercased()).globalmode"
+
+    @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private(set) var preferredMode: FunctionKeyMode
+
     var currentMode: FunctionKeyMode {
         didSet {
             do {
@@ -101,13 +106,25 @@ final class FunctionKeyModeManager {
         }
     }
 
-    init() {
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+
+        let preferredMode = FunctionKeyMode(
+            rawValue: defaults.integer(forKey: Self.preferredModeStorageKey)
+        ) ?? .mediaControls
+        self.preferredMode = preferredMode
+        self.currentMode = preferredMode
+
         do {
-            self.currentMode = try FunctionKeyModeManager.currentMode()
+            try FunctionKeyModeManager.setCurrentMode(preferredMode)
         } catch {
             print("Error: \(error)")
-            self.currentMode = .mediaControls
         }
+    }
+
+    func recordPreferredMode(_ mode: FunctionKeyMode) {
+        preferredMode = mode
+        defaults.set(mode.rawValue, forKey: Self.preferredModeStorageKey)
     }
 
     static func setCurrentMode(_ mode: FunctionKeyMode) throws {

@@ -9,6 +9,7 @@ final class FunctionKeyModeController {
 
     var globalMode: FunctionKeyMode {
         didSet {
+            modeManager.recordPreferredMode(globalMode)
             applyEffectiveMode()
         }
     }
@@ -25,7 +26,7 @@ final class FunctionKeyModeController {
         self.modeManager = modeManager
         self.applicationPreferences = applicationPreferences
         self.foregroundTargetObserver = foregroundTargetObserver
-        self.globalMode = modeManager.currentMode
+        self.globalMode = modeManager.preferredMode
         self.currentMode = modeManager.currentMode
         self.frontmostTarget = nil
         self.currentTargetMode = .useGlobalSetting
