@@ -23,6 +23,7 @@ struct MenuBarView: View {
             } icon: {
                 currentTargetIcon
             }
+            .labelStyle(.titleAndIcon)
         }
 
         Picker(selection: $modeController.globalMode) {

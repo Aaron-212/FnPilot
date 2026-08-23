@@ -1,7 +1,19 @@
+import AppKit
 import SwiftUI
+
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationWillTerminate(_ notification: Notification) {
+        do {
+            try FunctionKeyModeManager.applyTerminationMode()
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+}
 
 @main
 struct FnPilotApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var modeController: FunctionKeyModeController
     @State private var applicationPreferences: ApplicationFunctionKeyPreferences
 

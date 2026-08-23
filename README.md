@@ -10,9 +10,10 @@ FnPilot is a spiritual successor to Fluor, a macOS utility with a similar goal. 
 
 - Menu bar control for the current function-key mode.
 - Global mode selection:
-  - `Media`: use the top row as brightness, volume, playback, and other media keys.
-  - `Fn`: use the top row as standard function keys.
+    - `Media`: use the top row as brightness, volume, playback, and other media keys.
+    - `Fn`: use the top row as standard function keys.
 - Per-app overrides based on the foreground app.
+- Configurable Fn or Media mode to leave active after quitting.
 - Support for both application bundles and standalone executable paths.
 - Settings window with launch-at-login support.
 - Preferences stored locally in `UserDefaults`.
@@ -30,6 +31,7 @@ It has no external or 3rd party package dependencies.
 Open the project in Xcode, select the `FnPilot` scheme, and then build and run.
 
 You can also build from the command line:
+
 ```sh
 xcodebuild -project FnPilot.xcodeproj -scheme FnPilot -configuration Debug build
 ```
