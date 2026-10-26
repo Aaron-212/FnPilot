@@ -11,6 +11,25 @@ enum FunctionKeyMode: Int, CaseIterable, Identifiable {
     var id: Self { self }
 }
 
+enum TerminationFunctionKeyMode: Int, CaseIterable, Identifiable {
+    case mediaControls = 0
+    case functionKeys
+    case restoreLaunchMode
+
+    var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .mediaControls:
+            FunctionKeyMode.mediaControls.title
+        case .functionKeys:
+            FunctionKeyMode.functionKeys.title
+        case .restoreLaunchMode:
+            String(localized: "Restore launch mode")
+        }
+    }
+}
+
 enum ApplicationFunctionKeyMode: Int, CaseIterable, Codable, Identifiable {
     case mediaControls = 0
     case functionKeys
@@ -98,6 +117,7 @@ final class FunctionKeyModeManager {
     static let terminationModeStorageKey = "\(AppIdentity.bundleIdentifier.lowercased()).terminationmode"
 
     @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private let launchMode: FunctionKeyMode?
     @ObservationIgnored private(set) var preferredMode: FunctionKeyMode
     @ObservationIgnored private var requiresModeWrite = true
 
@@ -111,7 +131,15 @@ final class FunctionKeyModeManager {
                 rawValue: defaults.integer(forKey: Self.preferredModeStorageKey)
             ) ?? .mediaControls
         self.preferredMode = preferredMode
-        self.currentMode = (try? Self.currentMode()) ?? preferredMode
+        let launchMode: FunctionKeyMode?
+        do {
+            launchMode = try Self.currentMode()
+        } catch {
+            Self.logModeChangeError(error, context: "Launch mode capture")
+            launchMode = nil
+        }
+        self.launchMode = launchMode
+        self.currentMode = launchMode ?? preferredMode
     }
 
     func reconcile(with mode: FunctionKeyMode) {
@@ -166,14 +194,28 @@ final class FunctionKeyModeManager {
         }
     }
 
-    static func applyTerminationMode(defaults: UserDefaults = .standard) throws {
-        let mode =
-            FunctionKeyMode(
-                rawValue: defaults.integer(forKey: terminationModeStorageKey)
+    func applyTerminationMode() throws {
+        let terminationMode =
+            TerminationFunctionKeyMode(
+                rawValue: defaults.integer(forKey: Self.terminationModeStorageKey)
             ) ?? .mediaControls
 
-        logger.info("Termination: applying configured mode=\(mode.rawValue)")
-        try setCurrentMode(mode)
+        let mode: FunctionKeyMode
+        switch terminationMode {
+        case .mediaControls:
+            mode = .mediaControls
+        case .functionKeys:
+            mode = .functionKeys
+        case .restoreLaunchMode:
+            guard let launchMode else {
+                Self.logger.error("Termination: cannot restore launch mode because capture failed")
+                return
+            }
+            mode = launchMode
+        }
+
+        Self.logger.info("Termination: applying configured mode=\(mode.rawValue)")
+        try Self.setCurrentMode(mode)
     }
 
     static func setCurrentMode(_ mode: FunctionKeyMode) throws {

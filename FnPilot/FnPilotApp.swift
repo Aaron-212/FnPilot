@@ -2,9 +2,11 @@ import AppKit
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    var modeManager: FunctionKeyModeManager?
+
     func applicationWillTerminate(_ notification: Notification) {
         do {
-            try FunctionKeyModeManager.applyTerminationMode()
+            try modeManager?.applyTerminationMode()
         } catch {
             FunctionKeyModeManager.logModeChangeError(error, context: "Termination mode change")
         }
@@ -18,11 +20,14 @@ struct FnPilotApp: App {
     @State private var applicationPreferences: ApplicationFunctionKeyPreferences
 
     init() {
+        let modeManager = FunctionKeyModeManager()
         let applicationPreferencesState = ApplicationFunctionKeyPreferences()
         applicationPreferences = applicationPreferencesState
         modeController = FunctionKeyModeController(
+            modeManager: modeManager,
             applicationPreferences: applicationPreferencesState
         )
+        appDelegate.modeManager = modeManager
     }
 
     var body: some Scene {

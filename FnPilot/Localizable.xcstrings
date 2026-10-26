@@ -201,6 +201,16 @@
         }
       }
     },
+    "Restore launch mode" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "恢复启动时的模式"
+          }
+        }
+      }
+    },
     "Remove Item" : {
       "localizations" : {
         "zh-Hans" : {

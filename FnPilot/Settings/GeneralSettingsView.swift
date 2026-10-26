@@ -13,7 +13,7 @@ struct GeneralSettingsView: View {
     @State private var launchAtLoginError = ""
     @State private var showsLaunchAtLoginError = false
     @AppStorage(FunctionKeyModeManager.terminationModeStorageKey)
-    private var terminationMode = FunctionKeyMode.mediaControls
+    private var terminationMode = TerminationFunctionKeyMode.mediaControls
 
     var body: some View {
         Form {
@@ -36,7 +36,7 @@ struct GeneralSettingsView: View {
             }
 
             Picker("Mode after quitting", selection: $terminationMode) {
-                ForEach(FunctionKeyMode.allCases) { mode in
+                ForEach(TerminationFunctionKeyMode.allCases) { mode in
                     Text(mode.title).tag(mode)
                 }
             }
