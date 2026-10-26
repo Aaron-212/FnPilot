@@ -20,7 +20,7 @@ FnPilot is a spiritual successor to Fluor, a macOS utility with a similar goal. 
 
 ## Requirements
 
-- macOS 15.6 or later, Apple Silicon or Intel processors are supported.
+- macOS 26.0 or later, Apple Silicon or Intel processors are supported.
 - Xcode with support for the configured macOS SDK.
 
 FnPilot is a native SwiftUI app and uses AppKit, IOKit, Observation, ServiceManagement, etc.
