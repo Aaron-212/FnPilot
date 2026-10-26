@@ -21,6 +21,16 @@
         }
       }
     },
+    "Couldn’t Update Launch at Login" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法更新登录启动设置"
+          }
+        }
+      }
+    },
     "Current mode: %@" : {
       "localizations" : {
         "zh-Hans" : {
@@ -91,6 +101,16 @@
         }
       }
     },
+    "Launch at login requires approval." : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登录时启动需要批准。"
+          }
+        }
+      }
+    },
     "Media" : {
       "localizations" : {
         "zh-Hans" : {
@@ -127,6 +147,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "没有针对App的单独设置"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "好"
+          }
+        }
+      }
+    },
+    "Open Login Items" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开登录项"
           }
         }
       }
