@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MenuBarView: View {
-    @Environment(\.openSettings) private var openSettings
+    @Environment(\.openWindow) private var openWindow
     @Environment(FunctionKeyModeController.self) private var modeController
 
     var body: some View {
@@ -15,7 +15,7 @@ struct MenuBarView: View {
 
         Picker(selection: currentTargetMode) {
             ForEach(ApplicationFunctionKeyMode.allCases) { mode in
-                Text(mode.title).tag(mode)
+                Label(mode.title, systemImage: mode.systemImageName).tag(mode)
             }
         } label: {
             Label {
@@ -28,7 +28,7 @@ struct MenuBarView: View {
 
         Picker(selection: $modeController.globalMode) {
             ForEach(FunctionKeyMode.allCases) { mode in
-                Text(mode.title).tag(mode)
+                Label(mode.title, systemImage: mode.systemImageName).tag(mode)
             }
         } label: {
             Label {
@@ -74,12 +74,6 @@ struct MenuBarView: View {
 
     private func showSettings() {
         NSApp.activate(ignoringOtherApps: true)
-        openSettings()
-
-        DispatchQueue.main.async {
-            NSApp.windows.first {
-                $0.identifier?.rawValue == "com.apple.SwiftUI.Settings"
-            }?.makeKeyAndOrderFront(nil)
-        }
+        openWindow(id: FnPilotApp.settingsWindowID)
     }
 }

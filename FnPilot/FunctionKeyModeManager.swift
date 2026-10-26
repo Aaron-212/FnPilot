@@ -28,6 +28,17 @@ enum TerminationFunctionKeyMode: Int, CaseIterable, Identifiable {
             String(localized: "Restore launch mode")
         }
     }
+
+    var systemImageName: String {
+        switch self {
+        case .mediaControls:
+            FunctionKeyMode.mediaControls.systemImageName
+        case .functionKeys:
+            FunctionKeyMode.functionKeys.systemImageName
+        case .restoreLaunchMode:
+            "arrow.counterclockwise"
+        }
+    }
 }
 
 enum ApplicationFunctionKeyMode: Int, CaseIterable, Codable, Identifiable {
@@ -86,6 +97,10 @@ extension FunctionKeyMode {
 }
 
 extension ApplicationFunctionKeyMode {
+    var systemImageName: String {
+        explicitMode?.systemImageName ?? "macwindow.on.rectangle"
+    }
+
     var explicitMode: FunctionKeyMode? {
         switch self {
         case .mediaControls:
@@ -160,6 +175,12 @@ final class FunctionKeyModeManager {
             try Self.setCurrentMode(mode)
             currentMode = mode
             requiresModeWrite = false
+        } catch FunctionKeyModeManagerError.cannotSetParameter(let code) where code == kIOReturnNotPermitted {
+            // The event-system write takes effect before the registry write is denied.
+            // Registry readback still returns the old mode, so retain the applied mode for the UI.
+            // Keep requiresModeWrite set: the registry cannot confirm the runtime mode on the next reconciliation.
+            currentMode = mode
+            Self.logger.debug("Retaining applied mode=\(mode.rawValue) after denied registry write")
         } catch {
             Self.logModeChangeError(error, context: "Mode change")
             // A write can partially succeed. Preserve the last known mode if readback also fails.

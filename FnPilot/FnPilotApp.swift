@@ -15,6 +15,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 @main
 struct FnPilotApp: App {
+    static let settingsWindowID = "settings"
+
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var modeController: FunctionKeyModeController
     @State private var applicationPreferences: ApplicationFunctionKeyPreferences
@@ -31,18 +33,45 @@ struct FnPilotApp: App {
     }
 
     var body: some Scene {
-        Settings {
+        Window("FnPilot Settings", id: Self.settingsWindowID) {
             SettingsView()
                 .environment(applicationPreferences)
         }
         .defaultLaunchBehavior(.suppressed)
-        .windowResizability(.contentMinSize)
         .restorationBehavior(.disabled)
         .defaultSize(width: 700, height: 500)
+        .commands {
+            SettingsCommands()
+        }
 
-        MenuBarExtra("FnPilot Menu", systemImage: modeController.currentMode.systemImageName) {
+        MenuBarExtra {
             MenuBarView()
                 .environment(modeController)
+        } label: {
+            MenuBarIcon(modeController: modeController)
+        }
+    }
+}
+
+private struct MenuBarIcon: View {
+    let modeController: FunctionKeyModeController
+
+    var body: some View {
+        Image(systemName: modeController.currentMode.systemImageName)
+            .accessibilityLabel("FnPilot Menu")
+    }
+}
+
+private struct SettingsCommands: Commands {
+    @Environment(\.openWindow) private var openWindow
+
+    var body: some Commands {
+        CommandGroup(replacing: .appSettings) {
+            Button("Settings…") {
+                NSApp.activate(ignoringOtherApps: true)
+                openWindow(id: FnPilotApp.settingsWindowID)
+            }
+            .keyboardShortcut(",", modifiers: .command)
         }
     }
 }

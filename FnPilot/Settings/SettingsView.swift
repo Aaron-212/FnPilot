@@ -15,6 +15,7 @@ struct SettingsView: View {
                 Label("Per App", systemImage: "app.badge")
             }
         }
+        .tabViewStyle(.sidebarAdaptable)
         .formStyle(.grouped)
     }
 }

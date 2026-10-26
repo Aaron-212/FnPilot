@@ -37,7 +37,7 @@ struct GeneralSettingsView: View {
 
             Picker("Mode after quitting", selection: $terminationMode) {
                 ForEach(TerminationFunctionKeyMode.allCases) { mode in
-                    Text(mode.title).tag(mode)
+                    Label(mode.title, systemImage: mode.systemImageName).tag(mode)
                 }
             }
         }

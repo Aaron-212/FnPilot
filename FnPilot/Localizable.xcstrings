@@ -71,6 +71,9 @@
         }
       }
     },
+    "FnPilot Settings" : {
+
+    },
     "General" : {
       "localizations" : {
         "zh-Hans" : {
@@ -201,6 +204,16 @@
         }
       }
     },
+    "Remove Item" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除项目"
+          }
+        }
+      }
+    },
     "Restore launch mode" : {
       "localizations" : {
         "zh-Hans" : {
@@ -211,15 +224,8 @@
         }
       }
     },
-    "Remove Item" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "删除项目"
-          }
-        }
-      }
+    "Settings…" : {
+
     }
   },
   "version" : "1.3"

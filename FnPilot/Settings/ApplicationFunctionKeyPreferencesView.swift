@@ -6,26 +6,29 @@ struct ApplicationFunctionKeyPreferencesView: View {
     @Environment(ApplicationFunctionKeyPreferences.self) private
         var applicationPreferences
     @State private var selectedItems = Set<ApplicationFunctionKeyPreference.ID>()
+    @State private var searchText = ""
 
     private static let iconSize: CGFloat = 28
 
     var body: some View {
-        VStack(spacing: 0) {
-            if entries.isEmpty {
-                ContentUnavailableView(
-                    "No Per-App Settings",
-                    systemImage: "app.badge"
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                List(entries, selection: $selectedItems) { entry in
-                    appRow(for: entry)
-                }
-                .listStyle(.inset)
+        Group {
+            List(entries, selection: $selectedItems) { entry in
+                appRow(for: entry)
+                    .alignmentGuide(.listRowSeparatorLeading) { _ in 32 }
             }
-
-            Divider()
-
+            .listStyle(.inset)
+            .searchable(text: $searchText)
+            .overlay {
+                if entries.isEmpty {
+                    ContentUnavailableView(
+                        "No Per-App Settings",
+                        systemImage: "app.badge"
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            }
+        }
+        .safeAreaBar(edge: .bottom) {
             HStack {
                 Button {
                     addApplication()
@@ -40,7 +43,7 @@ struct ApplicationFunctionKeyPreferencesView: View {
                 }
 
                 Spacer()
-                
+
                 Button(role: .destructive) {
                     deleteItems(at: selectedItems)
                 } label: {
@@ -92,7 +95,7 @@ struct ApplicationFunctionKeyPreferencesView: View {
 
             Picker("Mode", selection: binding(for: entry.id)) {
                 ForEach(ApplicationFunctionKeyMode.allCases) { mode in
-                    Text(mode.title).tag(mode)
+                    Label(mode.title, systemImage: mode.systemImageName).tag(mode)
                 }
             }
             .labelsHidden()
