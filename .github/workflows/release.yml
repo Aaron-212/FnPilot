@@ -52,6 +52,7 @@ jobs:
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "safe_tag=${tag//\//-}" >> "$GITHUB_OUTPUT"
           echo "app_version=$app_version" >> "$GITHUB_OUTPUT"
+          echo "build_number=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Build ad-hoc signed Release app
         run: |
@@ -62,7 +63,7 @@ jobs:
             -destination "generic/platform=macOS" \
             -derivedDataPath build/DerivedData \
             MARKETING_VERSION="${{ steps.release_tag.outputs.app_version }}" \
-            CURRENT_PROJECT_VERSION="${{ steps.release_tag.outputs.app_version }}" \
+            CURRENT_PROJECT_VERSION="${{ steps.release_tag.outputs.build_number }}" \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="-" \
             build

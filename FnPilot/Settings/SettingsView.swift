@@ -14,6 +14,12 @@ struct SettingsView: View {
             } label: {
                 Label("Per App", systemImage: "app.badge")
             }
+            
+            Tab {
+                AboutView()
+            } label: {
+                Label("About", systemImage: "info.circle")
+            }
         }
         .tabViewStyle(.sidebarAdaptable)
         .formStyle(.grouped)
