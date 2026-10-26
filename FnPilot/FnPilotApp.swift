@@ -6,7 +6,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             try FunctionKeyModeManager.applyTerminationMode()
         } catch {
-            print("Error: \(error)")
+            FunctionKeyModeManager.logModeChangeError(error, context: "Termination mode change")
         }
     }
 }
