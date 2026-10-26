@@ -11,22 +11,31 @@ struct ApplicationFunctionKeyPreferencesView: View {
     private static let iconSize: CGFloat = 28
 
     var body: some View {
+        let visibleEntries = entries
+
         Group {
-            List(entries, selection: $selectedItems) { entry in
+            List(visibleEntries, selection: $selectedItems) { entry in
                 appRow(for: entry)
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 32 }
             }
             .listStyle(.inset)
             .searchable(text: $searchText)
             .overlay {
-                if entries.isEmpty {
-                    ContentUnavailableView(
-                        "No Per-App Settings",
-                        systemImage: "app.badge"
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                if visibleEntries.isEmpty {
+                    if searchQuery.isEmpty {
+                        ContentUnavailableView(
+                            "No Per-App Settings",
+                            systemImage: "app.badge"
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        ContentUnavailableView.search(text: searchQuery)
+                    }
                 }
             }
+        }
+        .onChange(of: visibleEntries.map(\.id)) { _, visibleIDs in
+            selectedItems.formIntersection(visibleIDs)
         }
         .safeAreaBar(edge: .bottom) {
             HStack {
@@ -55,10 +64,19 @@ struct ApplicationFunctionKeyPreferencesView: View {
         }
     }
 
+    private var searchQuery: String {
+        searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     private var entries: [ApplicationFunctionKeyPreference] {
         applicationPreferences.items
             .map { targetID, _ in
                 preference(for: targetID)
+            }
+            .filter { entry in
+                searchQuery.isEmpty
+                    || entry.displayName.localizedStandardContains(searchQuery)
+                    || entry.detail.localizedStandardContains(searchQuery)
             }
             .sorted {
                 let nameComparison = $0.displayName
