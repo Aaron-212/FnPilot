@@ -9,6 +9,10 @@ final class FunctionKeyModeController {
     @ObservationIgnored private var modeManager: FunctionKeyModeManager
     @ObservationIgnored private var applicationPreferences: ApplicationFunctionKeyPreferences
     @ObservationIgnored private var foregroundTargetObserver: ForegroundTargetObserver
+    @ObservationIgnored private var workspaceObservations: [NSObjectProtocol] = []
+    @ObservationIgnored private var isSessionActive =
+        (CGSessionCopyCurrentDictionary() as? [String: Any])?[kCGSessionOnConsoleKey as String] as? Bool ?? false
+    @ObservationIgnored private var isSleeping = false
 
     var globalMode: FunctionKeyMode {
         didSet {
@@ -42,7 +46,52 @@ final class FunctionKeyModeController {
             self?.refreshCurrentTargetMode(reason: "per-app preferences changed")
         }
 
-        setFrontmostTarget(foregroundTargetObserver.target)
+        observeWorkspaceChanges()
+        foregroundTargetObserver.refresh()
+    }
+
+    deinit {
+        for observation in workspaceObservations {
+            NSWorkspace.shared.notificationCenter.removeObserver(observation)
+        }
+    }
+
+    private func observeWorkspaceChanges() {
+        let center = NSWorkspace.shared.notificationCenter
+        for name in [
+            NSWorkspace.willSleepNotification,
+            NSWorkspace.didWakeNotification,
+            NSWorkspace.sessionDidResignActiveNotification,
+            NSWorkspace.sessionDidBecomeActiveNotification,
+        ] {
+            workspaceObservations.append(
+                center.addObserver(forName: name, object: nil, queue: .main) { [weak self] notification in
+                    MainActor.assumeIsolated {
+                        self?.handleWorkspaceChange(notification.name)
+                    }
+                }
+            )
+        }
+    }
+
+    private func handleWorkspaceChange(_ name: Notification.Name) {
+        switch name {
+        case NSWorkspace.willSleepNotification:
+            isSleeping = true
+        case NSWorkspace.didWakeNotification:
+            isSleeping = false
+        case NSWorkspace.sessionDidResignActiveNotification:
+            isSessionActive = false
+        case NSWorkspace.sessionDidBecomeActiveNotification:
+            isSessionActive = true
+        default:
+            return
+        }
+
+        guard isSessionActive, !isSleeping else { return }
+        // Resolve the foreground app again; the pre-sleep/session target may be stale.
+        modeManager.requireModeReapplication()
+        foregroundTargetObserver.refresh()
     }
 
     func setCurrentTargetMode(_ mode: ApplicationFunctionKeyMode) {
@@ -78,19 +127,18 @@ final class FunctionKeyModeController {
     }
 
     private func applyEffectiveMode(reason: String) {
+        guard isSessionActive, !isSleeping else {
+            Self.logger.info("Deferred mode reconciliation: session inactive or sleeping")
+            return
+        }
+
         let mode = currentTargetMode.explicitMode ?? globalMode
-        currentMode = mode
 
         Self.logger.info(
             "Resolve mode: reason=\(reason, privacy: .public), target=\(self.frontmostTarget?.displayName ?? "none", privacy: .public), rule=\(self.currentTargetMode.rawValue), global=\(self.globalMode.rawValue), effective=\(mode.rawValue), cached=\(self.modeManager.currentMode.rawValue)"
         )
 
-        guard modeManager.currentMode != mode else {
-            Self.logger.info("Skipped IOKit write: effective mode matches cached mode")
-            return
-        }
-
-        Self.logger.info("Applying effective mode through IOKit")
-        modeManager.currentMode = mode
+        modeManager.reconcile(with: mode)
+        currentMode = modeManager.currentMode
     }
 }

@@ -35,19 +35,21 @@ final class ForegroundTargetObserver {
         observation = NSWorkspace.shared.observe(
             \.frontmostApplication,
             options: [.initial, .new]
-        ) { [weak self] _, change in
-            let application = change.newValue as? NSRunningApplication
-
+        ) { [weak self] _, _ in
             DispatchQueue.main.async {
-                let target = Self.target(for: application)
-                self?.target = target
-                self?.onTargetChange(target)
+                self?.refresh()
             }
         }
     }
 
     deinit {
         observation?.invalidate()
+    }
+
+    func refresh() {
+        let target = Self.target(for: NSWorkspace.shared.frontmostApplication)
+        self.target = target
+        onTargetChange(target)
     }
 
     private static func target(for application: NSRunningApplication?) -> ForegroundTarget? {

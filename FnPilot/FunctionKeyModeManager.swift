@@ -99,17 +99,9 @@ final class FunctionKeyModeManager {
 
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private(set) var preferredMode: FunctionKeyMode
+    @ObservationIgnored private var requiresModeWrite = true
 
-    var currentMode: FunctionKeyMode {
-        didSet {
-            Self.logger.info("Cached mode changed: \(oldValue.rawValue) -> \(self.currentMode.rawValue)")
-            do {
-                try FunctionKeyModeManager.setCurrentMode(currentMode)
-            } catch {
-                Self.logModeChangeError(error, context: "Mode change")
-            }
-        }
-    }
+    private(set) var currentMode: FunctionKeyMode
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -119,14 +111,39 @@ final class FunctionKeyModeManager {
                 rawValue: defaults.integer(forKey: Self.preferredModeStorageKey)
             ) ?? .mediaControls
         self.preferredMode = preferredMode
-        self.currentMode = preferredMode
+        self.currentMode = (try? Self.currentMode()) ?? preferredMode
+    }
 
-        Self.logger.info("Startup: applying saved global mode=\(preferredMode.rawValue)")
+    func reconcile(with mode: FunctionKeyMode) {
+        // Read on every reconciliation: System Settings and other sessions can change the mode.
+        // If reading fails, attempt the write rather than trusting the last known value.
         do {
-            try FunctionKeyModeManager.setCurrentMode(preferredMode)
+            currentMode = try Self.currentMode()
+            guard requiresModeWrite || currentMode != mode else {
+                Self.logger.info("Skipped IOKit write: effective mode matches system mode")
+                return
+            }
         } catch {
-            Self.logModeChangeError(error, context: "Startup mode change")
+            Self.logModeChangeError(error, context: "System mode refresh")
         }
+
+        do {
+            requiresModeWrite = true
+            try Self.setCurrentMode(mode)
+            currentMode = mode
+            requiresModeWrite = false
+        } catch {
+            Self.logModeChangeError(error, context: "Mode change")
+            // A write can partially succeed. Preserve the last known mode if readback also fails.
+            if let actualMode = try? Self.currentMode() {
+                currentMode = actualMode
+            }
+        }
+    }
+
+    func requireModeReapplication() {
+        // Registry readback can lag behind the runtime mode, especially after a partially denied write.
+        requiresModeWrite = true
     }
 
     func recordPreferredMode(_ mode: FunctionKeyMode) {

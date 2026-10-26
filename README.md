@@ -46,3 +46,5 @@ If you download a release build, open it only if you trust the source, then use 
 - FnPilot is inspired by Fluor, but it is a separate project, and not a fork.
 - FnPilot starts as a menu bar app and suppresses the settings window on launch.
 - Per-app settings are keyed by bundle identifier when available, or by executable path for apps without a bundle identifier.
+- FnPilot reads the system keyboard mode and reapplies the foreground app's rule (or the global mode) after waking from sleep or returning to your user session. It pauses rule application while asleep or while another user session is active.
+- Changes made in System Settings do not update FnPilot's saved preferences. They can remain active until the next foreground app change, wake, user-session activation, or FnPilot rule edit, when FnPilot reapplies the applicable rule. FnPilot does not continuously monitor System Settings.
