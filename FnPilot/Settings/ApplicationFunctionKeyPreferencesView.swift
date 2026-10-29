@@ -17,6 +17,8 @@ struct ApplicationFunctionKeyPreferencesView: View {
             List(visibleEntries, selection: $selectedItems) { entry in
                 appRow(for: entry)
                     .alignmentGuide(.listRowSeparatorLeading) { _ in 32 }
+                    .frame(maxWidth: 720)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
             .listStyle(.inset)
             .searchable(text: $searchText)
@@ -60,6 +62,7 @@ struct ApplicationFunctionKeyPreferencesView: View {
                 }
                 .disabled(selectedItems.isEmpty)
             }
+            .frame(maxWidth: 720)
             .padding()
         }
     }

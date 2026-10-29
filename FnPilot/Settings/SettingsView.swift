@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.dismissWindow) private var dismissWindow
+    
     var body: some View {
         TabView {
             Tab {
@@ -23,5 +25,9 @@ struct SettingsView: View {
         }
         .tabViewStyle(.sidebarAdaptable)
         .formStyle(.grouped)
+        .onKeyPress(.escape) {
+            dismissWindow()
+            return .handled
+        }
     }
 }

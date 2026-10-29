@@ -36,13 +36,13 @@ struct FnPilotApp: App {
         Window("FnPilot Settings", id: Self.settingsWindowID) {
             SettingsView()
                 .environment(applicationPreferences)
+                .windowFullScreenBehavior(.disabled)
+                .windowMinimizeBehavior(.disabled)
+                .frame(minWidth: 600, minHeight: 400)
         }
         .defaultLaunchBehavior(.suppressed)
         .restorationBehavior(.disabled)
         .defaultSize(width: 700, height: 500)
-        .commands {
-            SettingsCommands()
-        }
 
         MenuBarExtra {
             MenuBarView()
@@ -59,19 +59,5 @@ private struct MenuBarIcon: View {
     var body: some View {
         Image(systemName: modeController.currentMode.systemImageName)
             .accessibilityLabel("FnPilot Menu")
-    }
-}
-
-private struct SettingsCommands: Commands {
-    @Environment(\.openWindow) private var openWindow
-
-    var body: some Commands {
-        CommandGroup(replacing: .appSettings) {
-            Button("Settings…") {
-                NSApp.activate(ignoringOtherApps: true)
-                openWindow(id: FnPilotApp.settingsWindowID)
-            }
-            .keyboardShortcut(",", modifiers: .command)
-        }
     }
 }
