@@ -10,13 +10,17 @@ on:
         description: "Existing tag to release"
         required: true
 
-permissions:
-  contents: write
+permissions: {}
 
 jobs:
   release:
     name: Build and draft release
     runs-on: macos-26
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
 
     steps:
       - name: Check out repository
@@ -80,6 +84,11 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent \
             build/DerivedData/Build/Products/Release/FnPilot.app \
             "build/artifacts/FnPilot-${{ steps.release_tag.outputs.safe_tag }}-adhoc.zip"
+
+      - name: Attest build artifact
+        uses: actions/attest@v4
+        with:
+          subject-path: build/artifacts/FnPilot-${{ steps.release_tag.outputs.safe_tag }}-adhoc.zip
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
